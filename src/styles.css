@@ -1,0 +1,153 @@
+:root {
+  color-scheme: dark;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+  background: #231815;
+  color: #fff5ea;
+  font-family: Inter, system-ui, sans-serif;
+}
+button,
+input,
+textarea {
+  font: inherit;
+}
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #ef8354;
+  outline-offset: 3px;
+}
+.relay-page {
+  width: min(1060px, calc(100% - 2rem));
+  margin: auto;
+  padding: 6rem 0 4rem;
+}
+.eyebrow {
+  color: #ef8354;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  margin: 0 0 0.55rem;
+}
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+h1 {
+  font-size: clamp(3rem, 8vw, 6rem);
+  max-width: 11ch;
+  line-height: 0.88;
+  letter-spacing: -0.075em;
+  margin-bottom: 1rem;
+}
+.intro,
+header > p[role="status"],
+.compose p {
+  color: #e3c1ab;
+  line-height: 1.5;
+}
+.relay-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.card {
+  padding: 1.35rem;
+  border: 1px solid #ffffff20;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #3d251f, #2d1d19);
+  box-shadow: 0 20px 45px #0003;
+}
+.mesh-name-input {
+  margin: 0.2rem 0 1rem;
+}
+.compose label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+}
+.compose textarea {
+  width: 100%;
+  border: 1px solid #ffffff34;
+  border-radius: 13px;
+  padding: 0.8rem;
+  background: #1b110f;
+  color: #fff5ea;
+  resize: vertical;
+}
+.primary,
+.copy {
+  width: 100%;
+  margin-top: 0.8rem;
+  padding: 0.82rem;
+  border: 0;
+  border-radius: 12px;
+  background: #ef8354;
+  color: #32180e;
+  font-weight: 900;
+  cursor: pointer;
+}
+.primary:disabled,
+.copy:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+blockquote {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-left: 3px solid #ef8354;
+  background: #ffffff09;
+  line-height: 1.5;
+}
+.recipe ol {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+.recipe li {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.6rem;
+  border-top: 1px solid #ffffff18;
+  padding: 0.85rem 0;
+}
+.recipe li > span {
+  color: #ef8354;
+  font-weight: 900;
+}
+.recipe li p {
+  line-height: 1.5;
+  margin: 0;
+}
+.recipe small {
+  display: block;
+  color: #e3c1ab;
+  margin-top: 0.3rem;
+}
+.copy {
+  background: #ffffff12;
+  color: #fff5ea;
+  border: 1px solid #ef8354;
+}
+.empty {
+  color: #e3c1ab;
+}
+@media (max-width: 720px) {
+  .relay-page {
+    padding-top: 5.2rem;
+  }
+  .relay-grid {
+    grid-template-columns: 1fr;
+  }
+}
