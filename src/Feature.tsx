@@ -47,9 +47,12 @@ export function Feature({ room, config }: Props) {
   const myTurn = Boolean(room && nextId === room.peerId && !mine);
   const recipeText = entries.map(([, step], i) => `${i + 1}. ${step.text}`).join("\n");
   const turnState = mine ? "complete" : myTurn ? "my-turn" : "waiting";
-  const cookCount = room ? room.peerCount + 1 : 0;
+  // Awareness is live transport state while names are card state. The latter
+  // may arrive first over BroadcastChannel, so the card count uses either
+  // signal and intentionally says "on this card" rather than "online now".
+  const cookCount = room ? Math.max(room.peerCount + 1, peerIds.length) : 0;
   const connectionLabel = room
-    ? `${cookCount} ${cookCount === 1 ? "cook" : "cooks"} in this kitchen`
+    ? `${cookCount} ${cookCount === 1 ? "cook" : "cooks"} on this card`
     : "Joining the kitchen";
   const turnLabel = mine
     ? "Your instruction is in"
