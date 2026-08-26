@@ -11,7 +11,11 @@ describe("recipe relay", () => {
   it("renders text controls", () => {
     render(<Feature room={createMockRoom()} config={config} />);
     expect(
-      screen.getByRole("heading", { name: "Pass the spoon. Build dinner together." }),
+      screen.getByRole("heading", {
+        name: "Make the recipe together, one good instruction at a time.",
+      }),
     ).toBeInTheDocument();
+    expect(screen.getByLabelText("Cook name")).toBeInTheDocument();
+    expect(screen.getByLabelText("Next instruction")).toBeInTheDocument();
   });
 });

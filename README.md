@@ -1,94 +1,88 @@
-# **APP_NAME**
+# Recipe Relay
 
-[![pages](https://img.shields.io/badge/live-baditaflorin.github.io%2F__APP_NAME__-__ACCENT_NOHASH__)](https://baditaflorin.github.io/__APP_NAME__/)
-[![version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/baditaflorin/__APP_NAME__/blob/main/package.json)
-[![license](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+[![live demo](https://img.shields.io/badge/live-demo-e9b56d)](https://baditaflorin.github.io/mesh-recipe-relay/)
+[![version](https://img.shields.io/badge/version-0.1.0-31545d)](https://github.com/baditaflorin/mesh-recipe-relay/blob/main/package.json)
+[![license](https://img.shields.io/badge/license-MIT-65c997)](./LICENSE)
 
-> **DESCRIPTION**
+> A shared kitchen card where every cook contributes one clear next step.
 
-**Live → https://baditaflorin.github.io/__APP_NAME__/**
+**Live:** https://baditaflorin.github.io/mesh-recipe-relay/
 
-**Source → https://github.com/baditaflorin/__APP_NAME__**
+**Source:** https://github.com/baditaflorin/mesh-recipe-relay
 
-**Tip the dev (buy a coffee) → https://www.paypal.com/paypalme/florinbadita**
+![Recipe Relay on one device](docs/screenshot.png)
 
----
+![Two cooks sharing a Recipe Relay](docs/preview.png)
 
-![screenshot](docs/screenshot.png)
+## What it does
 
-> Two peers, side-by-side, in the same room. Drop a `tests/demo/scenario.mjs`
-> exporting `default async (a, b) => …` and run `npm run demo` to regenerate
-> `docs/preview.png` plus `docs/demo-a.webm` / `docs/demo-b.webm` clips.
+Recipe Relay turns a group recipe into a calm, turn-based shared card:
 
-![preview](docs/preview.png)
+- Every connected cook sees the same ordered instructions.
+- Each cook can publish exactly one concrete next instruction.
+- The active turn advances deterministically, so people do not overwrite one another.
+- The finished card can be copied as plain text.
 
-## What it is
+There is no application database or account. Recipe state lives in a Yjs document shared directly between browsers in the same room.
 
-A **rootless-computing** peer-to-peer browser app. No backend of its own beyond the self-hosted WebRTC stack listed below. State lives in a Yjs mesh shared by everyone in the same room.
+## Use it
 
-Read the principles → **https://baditaflorin.github.io/rootless-computing/principles.html**
+1. Open the [live app](https://baditaflorin.github.io/mesh-recipe-relay/) on the first device.
+2. Use **Invite** in the top bar to share the current room with the other cooks.
+3. Add a name, wait for the active turn, then write one useful instruction.
+4. Continue until the card is complete, then select **Copy recipe**.
 
-## Quickstart
+The room link is the access boundary. Anyone who joins it can read the shared recipe, so share it deliberately.
 
-Open the live URL on two devices in the same room (set in ⚙ settings, or scan the room QR). Everything else is in-app.
+## Local development
 
-For local hacking:
+`mesh-common` must sit next to this repository because the app consumes it through `file:../mesh-common`.
 
 ```bash
 git clone https://github.com/baditaflorin/mesh-common
-git clone https://github.com/baditaflorin/__APP_NAME__
-cd __APP_NAME__
-npm install
+git clone https://github.com/baditaflorin/mesh-recipe-relay
+cd mesh-common && npm ci
+cd ../mesh-recipe-relay && npm ci
 npm run dev
 ```
 
-`mesh-common` must sit as a **sibling** directory because `package.json` references it via `file:../mesh-common`.
-
-## Self-hosted infrastructure
-
-| Repo                                              | Endpoint                               | Purpose                     |
-| ------------------------------------------------- | -------------------------------------- | --------------------------- |
-| https://github.com/baditaflorin/signaling-server  | `wss://turn.0docker.com/ws`            | y-webrtc signaling fan-out  |
-| https://github.com/baditaflorin/turn-token-server | `https://turn.0docker.com/credentials` | HMAC TURN creds, 1-hour TTL |
-| https://github.com/baditaflorin/coturn-hetzner    | `turn:turn.0docker.com:3479`           | TURN relay                  |
-
-## Settings overrides
-
-The settings drawer lets the user override signaling and TURN endpoints. localStorage keys:
-
-- `__APP_NAME__:signalingUrl`
-- `__APP_NAME__:turnTokenUrl`
-- `__APP_NAME__:iceServers`
-- `__APP_NAME__:room`
-
-If endpoints are blank or unreachable, the app falls back to STUN-only.
-
-## Version + commit on every screen
-
-The bottom-right footer on every screen of the live app shows:
-
-- `source` → this repo
-- `tip ♥` → PayPal
-- `vX.Y.Z · <short-sha>` — version from `package.json` plus the build-time git commit
-
-## Build & deploy
-
-GitHub Pages serves the committed `docs/` directory on the `main` branch. There is no GitHub Actions build workflow; local Husky-style hooks gate formatting / typecheck / smoke build before each push.
+Useful checks:
 
 ```bash
-npm run smoke                                    # build + sanity-check docs/
-bash ../mesh-common/scripts/screenshot-app.sh    # regenerate docs/screenshot.png
+npm run fmt:check
+npm run typecheck
+npm run test
+npm run smoke
+npm run audit:security
 ```
 
-## Privacy
+`tests/e2e/mesh.spec.ts` includes a real two-peer browser relay: it proves both cooks receive the same two steps in turn order, as well as the 390×844 phone and 1141×602 desktop first-view contracts.
+
+## Privacy and transport
+
+Recipe Relay uses the self-hosted Mesh signaling and TURN infrastructure only to establish browser-to-browser connectivity. The app itself has no backend and does not collect a recipe database. Settings allow participants to inspect or override signaling and TURN endpoints.
 
 <!-- mesh:privacy-section:start -->
 
 Everything you publish to a room is visible to every peer in that room. Your local device's name, key, and choices stay local. Cryptographic signatures prove **who** wrote each entry; they do **not** prevent peers from reading or copying entries. The room URL is the access control — share it deliberately.
 
-See `docs/privacy.md` for the full threat model — capabilities used, what other peers in the mesh see, what the self-hosted infra sees, what stays local.
+See [the privacy and threat model](docs/privacy.md) for the full capabilities used, what other peers in the mesh see, what the self-hosted infrastructure sees, and what stays local.
+
 <!-- mesh:privacy-section:end -->
+
+## Build and release
+
+GitHub Pages serves the committed `docs/` directory from `main`. The repository uses Woodpecker for validation; it clones and installs the sibling `mesh-common` runtime before running formatting, types, unit tests, browser tests, and the Pages build.
+
+```bash
+npm run build
+npm run screenshot
+npm run demo
+npm run audit:security
+```
+
+The published audit report is available at [security-audit.md](https://baditaflorin.github.io/mesh-recipe-relay/security-audit.md).
 
 ## License
 
-MIT — see `LICENSE`.
+MIT — see [LICENSE](LICENSE).
