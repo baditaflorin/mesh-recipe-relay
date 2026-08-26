@@ -2,6 +2,7 @@ import { createMeshConfig } from "@baditaflorin/mesh-common";
 
 export const config = createMeshConfig({
   appName: "mesh-recipe-relay",
+  breadcrumbs: false,
   displayName: "Recipe Relay",
   visualProfile: "gather",
   shellLayout: "inset",
