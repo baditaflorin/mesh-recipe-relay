@@ -1,3 +1,4 @@
+# The fleet validates the native GitHub events it protects, not a local hook.
 when:
   - event: [push, pull_request]
 
